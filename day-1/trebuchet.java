@@ -37,7 +37,6 @@ class Trebuchet {
                 }
 
                 sum += previousNum;
-                System.out.println("sum: " + sum); 
             }
 
             System.out.println("Trebuchet sum is " + sum);
