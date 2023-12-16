@@ -1,12 +1,13 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+
 import java.util.Scanner;
 
 class CubeConundrumV2 {
 
     public static void main (String [] args) {
         if (args.length != 1) {
-            System.out.println("usage: java CubeConundrum [filename]");
+            System.out.println("usage: java CubeConundrumV2 [filename]");
             return;
         }
 
