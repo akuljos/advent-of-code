@@ -63,7 +63,7 @@ class Wait {
                     if (milliseconds > currDistance) {
                         sum += 1;
                     }
-                }
+                } 
 
                 prod *= sum;
             }
