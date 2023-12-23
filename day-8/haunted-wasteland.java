@@ -27,8 +27,7 @@ class HauntedWasteland {
 
             Map<String, String []> moveMap = new HashMap<String, String []>();
             while (s.hasNextLine()) {
-                String lineHa = s.nextLine();
-                String [] line = lineHa.split(" = ");
+                String [] line = s.nextLine().split(" = ");
                 String[] leftRight = line[1].substring(1, line[1].length() - 1).split(", ");
 
                 moveMap.put(line[0], leftRight);
