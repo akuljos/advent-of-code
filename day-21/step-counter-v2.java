@@ -6,10 +6,12 @@ import java.io.FileNotFoundException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
 
-class StepCounter {
+class StepCounterV2 {
 
     static List<List<Integer>> extractTable (Scanner s) {
         List<List<Integer>> table = new ArrayList<List<Integer>>();
@@ -40,20 +42,6 @@ class StepCounter {
         return table;
     }
 
-    static List<List<Integer>> generateVisited (int numRows, int numCols) {
-        List<List<Integer>> visited = new ArrayList<List<Integer>>();
-
-        for (int i = 0; i < numRows; i++) {
-            List<Integer> row = new ArrayList<Integer>();
-            for (int j = 0; j < numCols; j++) {
-                row.add(0);
-            }
-            visited.add(row);
-        }
-
-        return visited;
-    }
-
     static List<Integer> findStart (List<List<Integer>> table) {
         for (int i = 0; i < table.size(); i++) {
             for (int j = 0; j < table.get(i).size(); j++) {
@@ -68,9 +56,44 @@ class StepCounter {
         return null;
     }
 
+    static int modulate (int number, int mod) {
+        return ((number % mod) + mod) % mod;
+    }
+
+    static long reachableTest (List<List<Integer>> table, List<Integer> start, int numSteps) {
+        int parity = numSteps % 2;
+
+        List<Integer> xQueue = new ArrayList<Integer>(Arrays.asList(new Integer[] { start.get(0) }));
+        List<Integer> yQueue = new ArrayList<Integer>(Arrays.asList(new Integer[] { start.get(1) }));
+        List<Integer> distQueue = new ArrayList<Integer>(Arrays.asList(new Integer[] { 0 }));
+
+        int numRows = table.size(); int numCols = table.get(0).size();
+        Set<String> visited = new HashSet<String>();
+
+        long reachable = 0;
+
+        while (xQueue.size() > 0) {
+            int xPos = xQueue.remove(0); int yPos = yQueue.remove(0); int dist = distQueue.remove(0);
+
+            if (dist > numSteps || visited.contains(String.format("%d,%d", xPos, yPos)) || table.get(modulate(xPos, numRows)).get(modulate(yPos, numCols)) == 0) {
+                continue;
+            }
+
+            visited.add(String.format("%d,%d", xPos, yPos));
+            reachable += ((dist % 2 == parity) ? 1 : 0);
+
+            xQueue.add(xPos-1); yQueue.add(yPos); distQueue.add(dist+1);
+            xQueue.add(xPos+1); yQueue.add(yPos); distQueue.add(dist+1);
+            xQueue.add(xPos); yQueue.add(yPos-1); distQueue.add(dist+1);
+            xQueue.add(xPos); yQueue.add(yPos+1); distQueue.add(dist+1);
+        }
+
+        return reachable;
+    }
+
     public static void main (String [] args) {
         if (args.length != 1) {
-            System.out.println("usage: java StepCounter [filename]");
+            System.out.println("usage: java StepCounterV2 [filename]");
             return;
         }
 
@@ -82,33 +105,17 @@ class StepCounter {
 
             List<List<Integer>> table = extractTable(s);
 
-            int numRows = table.size(); int numCols = table.get(0).size();
-            List<List<Integer>> visited = generateVisited(numRows, numCols);
-
             List<Integer> start = findStart(table);
 
-            List<Integer> xQueue = new ArrayList<Integer>(Arrays.asList(new Integer[] { start.get(0) }));
-            List<Integer> yQueue = new ArrayList<Integer>(Arrays.asList(new Integer[] { start.get(1) }));
-            List<Integer> distQueue = new ArrayList<Integer>(Arrays.asList(new Integer[] { 0 }));
+            // Find number reachable in this cycle and plug into quadratic solver in Python program
 
-            int reachable = 0;
+            long reachable = reachableTest(table, start, 65);
+            System.out.println("Number reachable is " + reachable);
 
-            while (xQueue.size() > 0) {
-                int xPos = xQueue.remove(0); int yPos = yQueue.remove(0); int dist = distQueue.remove(0);
+            reachable = reachableTest(table, start, 65+131*4);
+            System.out.println("Number reachable is " + reachable);
 
-                if (xPos < 0 || yPos < 0 || xPos >= numRows || yPos >= numCols || dist > 64 || visited.get(xPos).get(yPos) == 1 || table.get(xPos).get(yPos) == 0) {
-                    continue;
-                }
-
-                visited.get(xPos).set(yPos,1);
-                reachable += ((dist % 2 == 0) ? 1 : 0);
-
-                xQueue.add(xPos-1); yQueue.add(yPos); distQueue.add(dist+1);
-                xQueue.add(xPos+1); yQueue.add(yPos); distQueue.add(dist+1);
-                xQueue.add(xPos); yQueue.add(yPos-1); distQueue.add(dist+1);
-                xQueue.add(xPos); yQueue.add(yPos+1); distQueue.add(dist+1);
-            }
-
+            reachable = reachableTest(table, start, 65+131*8);
             System.out.println("Number reachable is " + reachable);
 
         } catch (FileNotFoundException e) {
