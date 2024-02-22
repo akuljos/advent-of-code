@@ -1,3 +1,7 @@
+// build two hashmaps: one of a brick to supported bricks, and another of a brick to set of bricks supported by it
+// poopulate first hashmap while handling blocks initially
+// populate second hashmap in backwards order
+
 import java.io.File;
 import java.io.FileNotFoundException;
 
@@ -11,11 +15,11 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 
-class SandSlabs {
+class SandSlabsV2 {
 
     public static void main (String [] args) {
         if (args.length != 1) {
-            System.out.println("usage: java SandSlabs [filename]");
+            System.out.println("usage: java SandSlabsV2 [filename]");
             return;
         }
 
@@ -73,6 +77,9 @@ class SandSlabs {
 
             Set<Integer> nonDis = new HashSet<Integer>();
 
+            Map<Integer,Set<Integer>> supported = new HashMap<Integer,Set<Integer>>();
+            Map<Integer,Set<Integer>> supporting = new HashMap<Integer,Set<Integer>>();
+
             for (int idx = 0; idx < blockQueue.size(); idx++) {
 
                 List<Integer> block = blockQueue.get(idx);
@@ -111,6 +118,18 @@ class SandSlabs {
                     nonDis.add((int)maxHeightBlocks.toArray()[0]);
                 }
 
+                if ((int)maxHeightBlocks.toArray()[0] != -1) {
+                    supported.put(idx, maxHeightBlocks);
+                }
+
+                for (int item : maxHeightBlocks) {
+                    if (!supporting.containsKey(item)) {
+                        supporting.put(item, new HashSet<Integer>());
+                    }
+
+                    supporting.get(item).add(idx);
+                }
+
                 if (startZ != endZ) {
                     heightArray.get(startX).set(startY, maxHeight + endZ - startZ + 1);
                     blockArray.get(startX).set(startY, idx);
@@ -131,7 +150,33 @@ class SandSlabs {
             }
 
             nonDis.remove(-1);
-            System.out.println("Num can be disintegrated is " + (blockQueue.size() - nonDis.size()));
+            supporting.remove(-1);
+
+            long sum = 0;
+
+            for (int idx : nonDis) {
+                Set<Integer> tracker = new HashSet<Integer>();
+                tracker.add(idx);
+
+                List<Integer> trackerQueue = new ArrayList<Integer>();
+                if (supporting.containsKey(idx)) {
+                    trackerQueue.addAll(supporting.get(idx));
+                }
+
+                while (trackerQueue.size() > 0) {
+                    int block = trackerQueue.remove(0);
+                    if (supported.containsKey(block) && tracker.containsAll(supported.get(block))) {
+                        if (!tracker.contains(block) && supporting.containsKey(block)) {
+                            trackerQueue.addAll(supporting.get(block));
+                        }
+                        tracker.add(block);
+                    }
+                }
+
+                sum += (tracker.size() - 1);
+            }
+
+            System.out.println("Total number falling is " + sum);
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
