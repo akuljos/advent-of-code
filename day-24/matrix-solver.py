@@ -1,4 +1,4 @@
-import numpy.linalg 
+import numpy.linalg
 import numpy as np
 
 A = []
