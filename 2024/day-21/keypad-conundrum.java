@@ -26,7 +26,6 @@ class KeypadConundrum {
 
             while (s.hasNextLine()) {
                 String line = s.nextLine(); 
-                System.out.println("Keypad: " + line);
 
                 String numericalKeypadedLine = "";
                 String actualLine = "A" + line;
@@ -39,7 +38,6 @@ class KeypadConundrum {
                     }
                     numericalKeypadedLine += "A";
                 }
-                System.out.println("numericalKeypadedLine: " + numericalKeypadedLine);
 
                 String directionalKeypadedLineOne = "";
                 numericalKeypadedLine = "A" + numericalKeypadedLine;
@@ -52,7 +50,6 @@ class KeypadConundrum {
                     }
                     directionalKeypadedLineOne += "A";
                 }
-                System.out.println("directionalKeypadedLineOne: " + directionalKeypadedLineOne);
 
                 String directionalKeypadedLineTwo = "";
                 directionalKeypadedLineOne = "A" + directionalKeypadedLineOne;
@@ -65,8 +62,6 @@ class KeypadConundrum {
                     }
                     directionalKeypadedLineTwo += "A";
                 }
-                System.out.println("directionalKeypadedLineTwo: " + directionalKeypadedLineTwo);
-
 
                 totalComplexity += determineKeypadComplexity(line, directionalKeypadedLineTwo);
             }
@@ -84,7 +79,6 @@ class KeypadConundrum {
 
     private static long determineKeypadComplexity(String keypadCode, String route) {
         long keypadValue = Long.parseLong(keypadCode.substring(0,3));
-        System.out.println("Keypad value: " + keypadValue + ", routeLength: " + route.length());
 
         return keypadValue * route.length();
     }
@@ -96,21 +90,21 @@ class KeypadConundrum {
             put("8", ">");
             put("9", ">>");
             put("4", "v");
-            put("5", ">v");
-            put("6", ">>v");
+            put("5", "v>");
+            put("6", "v>>");
             put("1", "vv");
-            put("2", ">vv");
-            put("3", ">>vv");
+            put("2", "vv>");
+            put("3", "vv>>");
             put("0", ">vvv");
             put("A", ">>vvv");
         }};
         Map<String, String> eightPaths = new HashMap<String, String>() {{
             put("7", "<");
             put("9", ">");
-            put("4", "v<");
+            put("4", "<v");
             put("5", "v");
             put("6", "v>");
-            put("1", "vv<");
+            put("1", "<vv");
             put("2", "vv");
             put("3", "vv>");
             put("0", "vvv");
@@ -119,13 +113,13 @@ class KeypadConundrum {
         Map<String, String> ninePaths = new HashMap<String, String>() {{
             put("7", "<<");
             put("8", "<");
-            put("4", "v<<");
-            put("5", "v<");
+            put("4", "<<v");
+            put("5", "<v");
             put("6", "v");
-            put("1", "vv<<");
-            put("2", "vv<");
+            put("1", "<<vv");
+            put("2", "<vv");
             put("3", "vv");
-            put("0", "vvv<");
+            put("0", "<vvv");
             put("A", "vvv");
         }};
         Map<String, String> fourPaths = new HashMap<String, String>() {{
@@ -141,27 +135,27 @@ class KeypadConundrum {
             put("A", ">>vv");
         }};
         Map<String, String> fivePaths = new HashMap<String, String>() {{
-            put("7", "^<");
+            put("7", "<^");
             put("8", "^");
             put("9", "^>");
             put("4", "<");
             put("6", ">");
-            put("1", "v<");
+            put("1", "<v");
             put("2", "v");
             put("3", "v>");
             put("0", "vv");
             put("A", "vv>");
         }};
         Map<String, String> sixPaths = new HashMap<String, String>() {{
-            put("7", "^<<");
-            put("8", "^<");
+            put("7", "<<^");
+            put("8", "<^");
             put("9", "^");
             put("4", "<<");
             put("5", "<");
-            put("1", "v<<");
-            put("2", "v<");
+            put("1", "<<v");
+            put("2", "<v");
             put("3", "v");
-            put("0", "vv<");
+            put("0", "<vv");
             put("A", "vv");
         }};
         Map<String, String> onePaths = new HashMap<String, String>() {{
@@ -177,10 +171,10 @@ class KeypadConundrum {
             put("A", ">>v");
         }};
         Map<String, String> twoPaths = new HashMap<String, String>() {{
-            put("7", "^^<");
+            put("7", "<^^");
             put("8", "^^");
             put("9", "^^>");
-            put("4", "^<");
+            put("4", "<^");
             put("5", "^");
             put("6", "^>");
             put("1", "<");
@@ -189,15 +183,15 @@ class KeypadConundrum {
             put("A", "v>");
         }};
         Map<String, String> threePaths = new HashMap<String, String>() {{
-            put("7", "^^<<");
-            put("8", "^^<");
+            put("7", "<<^^");
+            put("8", "<^^");
             put("9", "^^");
-            put("4", "^<<");
-            put("5", "^<");
+            put("4", "<<^");
+            put("5", "<^");
             put("6", "^");
             put("1", "<<");
             put("2", "<");
-            put("0", "v<");
+            put("0", "<v");
             put("A", "v");
         }};
         Map<String, String> zeroPaths = new HashMap<String, String>() {{
@@ -214,13 +208,13 @@ class KeypadConundrum {
         }};
         Map<String, String> aPaths = new HashMap<String, String>() {{
             put("7", "^^^<<");
-            put("8", "^^^<");
+            put("8", "<^^^");
             put("9", "^^^");
             put("4", "^^<<");
-            put("5", "^^<");
+            put("5", "<^^");
             put("6", "^^");
             put("1", "^<<");
-            put("2", "^<");
+            put("2", "<^");
             put("3", "^");
             put("0", "<");
         }};
@@ -252,7 +246,7 @@ class KeypadConundrum {
         Map<String,String> aPaths = new HashMap<String, String>() {{
             put("^", "<");
             put("<", "v<<");
-            put("v", "v<");
+            put("v", "<v");
             put(">", "v");
         }};
         Map<String,String> leftPaths = new HashMap<String, String>() {{
